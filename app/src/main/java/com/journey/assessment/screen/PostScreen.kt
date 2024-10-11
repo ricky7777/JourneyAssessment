@@ -1,13 +1,15 @@
 package com.journey.assessment.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.journey.assessment.viewmodel.MainViewModel
 import com.journey.assessment.widget.JourneyTopAppBar
-
 
 /**
  * @author Ricky Chen
@@ -15,7 +17,10 @@ import com.journey.assessment.widget.JourneyTopAppBar
  * responsible show post list and navigate to comments detail screen
  */
 @Composable
-fun PostScreen(onNavigateToComments: () -> Unit, onBackPress: () -> Unit) {
+fun PostScreen(onNavigateToComments: () -> Unit,
+               onBackPress: () -> Unit,
+               mainViewModel: MainViewModel = hiltViewModel()) {
+
     var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
@@ -36,11 +41,16 @@ fun PostScreen(onNavigateToComments: () -> Unit, onBackPress: () -> Unit) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Post Fragment (Compose)")
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = onNavigateToComments) {
-                    Text(text = "Go to Comments")
+                mainViewModel.fetchPostList { post ->
+                    post?.let {
+                        Log.d("","")
+                    }
                 }
+//                Text(text = "Post Fragment (Compose)")
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Button(onClick = onNavigateToComments) {
+//                    Text(text = "Go to Comments")
+//                }
             }
         }
     )

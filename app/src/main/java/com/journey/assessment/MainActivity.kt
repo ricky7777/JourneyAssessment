@@ -12,11 +12,13 @@ import androidx.navigation.compose.rememberNavController
 import com.journey.assessment.screen.CommentsDetailScreen
 import com.journey.assessment.screen.PostScreen
 import com.journey.assessment.ui.theme.JourneyAssessmentTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * @author Ricky Chen
  * Main entry point
  */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

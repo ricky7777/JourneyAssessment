@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
+import com.journey.assessment.R
 
 /**
  * @author Ricky Chen
@@ -27,7 +29,9 @@ fun JourneyTopAppBar(
             TextField(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
-                placeholder = { Text("Search...") },
+                placeholder = {
+                    Text(text = stringResource(R.string.search_placeholder))
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.White,
@@ -46,7 +50,7 @@ fun JourneyTopAppBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = stringResource(R.string.text_back)
                 )
             }
         },

@@ -1,5 +1,8 @@
 package com.journey.assessment.module
 
+import com.journey.assessment.datasource.DataSource
+import com.journey.assessment.datasource.RemoteDataSource
+import com.journey.assessment.repository.PostRepository
 import com.journey.assessment.service.ApiService
 import dagger.Module
 import dagger.Provides
@@ -10,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import com.journey.assessment.datasource.LocalDataSource
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -47,4 +51,23 @@ object NetworkModule {
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideRemoteDataSource(apiService: ApiService): DataSource {
+        return RemoteDataSource(apiService)
+    }
+
+//    @Singleton
+//    @Provides
+//    fun provideLocalDataSource(): DataSource {
+//        return LocalDataSource()
+//    }
+
+    @Singleton
+    @Provides
+    fun providePostRepository(dataSource: DataSource): PostRepository {
+        return PostRepository(dataSource)
+    }
+
 }

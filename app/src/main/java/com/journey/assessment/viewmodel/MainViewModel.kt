@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.journey.assessment.model.CommentModel
 import com.journey.assessment.model.PostModel
-import com.journey.assessment.service.ApiService
+import com.journey.assessment.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,13 +15,13 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val apiService: ApiService
+    private val postRepository: PostRepository
 ) : ViewModel() {
 
     fun fetchPostList(onResult: (List<PostModel>?) -> Unit) {
         viewModelScope.launch {
             try {
-                val posts = apiService.getPostList()
+                val posts = postRepository.getPosts()
                 onResult(posts)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -32,7 +32,7 @@ class MainViewModel @Inject constructor(
 
     fun fetchPostComments(postId: Int, onResult: (List<CommentModel>) -> Unit) {
         viewModelScope.launch {
-            val comments = apiService.getPostComments(postId)
+            val comments = postRepository.getPostComments(postId)
             onResult(comments)
         }
     }

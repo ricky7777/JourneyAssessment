@@ -6,9 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.journey.assessment.screen.CommentsDetailScreen
 import com.journey.assessment.screen.PostScreen
 import com.journey.assessment.ui.theme.JourneyAssessmentTheme
@@ -41,15 +43,19 @@ fun MyAppNavHost() {
     val navController: NavHostController = rememberNavController()
     NavHost(navController = navController, startDestination = NavRoutes.POST) {
         composable(NavRoutes.POST) {
-            PostScreen(onNavigateToComments = {
-                navController.navigate(NavRoutes.COMMENTS)
+            PostScreen(onNavigateToComments = { postId ->
+                navController.navigate("${NavRoutes.COMMENTS}/$postId")
             }, onBackPress = {
                 navController.popBackStack()
             })
         }
 
-        composable("comments") {
-            CommentsDetailScreen(onBackPress = {
+        composable(
+            route = "${NavRoutes.COMMENTS}/{postId}",
+            arguments = listOf(navArgument("postId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val postId = backStackEntry.arguments?.getInt("postId")
+            CommentsDetailScreen(postId = postId, onBackPress = {
                 navController.popBackStack()
             })
         }

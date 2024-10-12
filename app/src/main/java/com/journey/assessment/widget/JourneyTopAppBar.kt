@@ -3,6 +3,7 @@ package com.journey.assessment.widget
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -44,12 +45,13 @@ fun JourneyTopAppBar(
         navigationIcon = {
             IconButton(
                 onClick = onBackPress,
-                modifier = Modifier.graphicsLayer(
-                    alpha = if (showBackButton) 1f else 0f
-                )
             ) {
+                var imageVector = Icons.Default.ArrowBack
+                if (!showBackButton) {
+                    imageVector = Icons.Default.Home
+                }
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    imageVector = imageVector,
                     contentDescription = stringResource(R.string.text_back)
                 )
             }

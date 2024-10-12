@@ -16,7 +16,7 @@ import com.journey.assessment.viewmodel.MainViewModel
 
 /**
  * @author Ricky Chen
- * show special id's comments
+ * show special post id's comments
  */
 @Composable
 fun CommentsDetailScreen(
@@ -29,8 +29,8 @@ fun CommentsDetailScreen(
 
     LaunchedEffect(postId) {
         postId?.let {
-            mainViewModel.fetchPostComments(it) { result ->
-                comments = result
+            handleCommentsLoading(postId, mainViewModel) { loadedComments ->
+                comments = loadedComments
             }
         }
     }
@@ -48,6 +48,45 @@ fun CommentsDetailScreen(
             Text(
                 text = stringResource(id = R.string.no_comments),
             )
+        }
+    }
+}
+
+suspend fun handleCommentsLoading(
+    postId: Int,
+    mainViewModel: MainViewModel,
+    onCommentsLoaded: (List<CommentModel>) -> Unit
+) {
+    if (mainViewModel.hasInternetConnection()) {
+        loadCommentsFromLocal(postId, mainViewModel, onCommentsLoaded)
+        loadCommentsFromNetwork(postId, mainViewModel, onCommentsLoaded)
+    } else {
+        loadCommentsFromLocal(postId, mainViewModel, onCommentsLoaded)
+    }
+}
+
+suspend fun loadCommentsFromLocal(
+    postId: Int,
+    mainViewModel: MainViewModel,
+    onCommentsLoaded: (List<CommentModel>) -> Unit
+) {
+    mainViewModel.getCommentsFromLocal(postId) { localComments ->
+        if (localComments.isNotEmpty()) {
+            onCommentsLoaded(localComments)
+        }
+    }
+}
+
+suspend fun loadCommentsFromNetwork(
+    postId: Int,
+    mainViewModel: MainViewModel,
+    onCommentsLoaded: (List<CommentModel>) -> Unit
+) {
+    mainViewModel.fetchPostComments(postId) { result ->
+        onCommentsLoaded(result)
+
+        result.forEach { comment ->
+            mainViewModel.saveCommentToLocal(comment)
         }
     }
 }

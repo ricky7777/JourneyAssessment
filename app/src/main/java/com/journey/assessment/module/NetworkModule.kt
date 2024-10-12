@@ -13,7 +13,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-import com.journey.assessment.datasource.LocalDataSource
 
 @Module
 @InstallIn(SingletonComponent::class)

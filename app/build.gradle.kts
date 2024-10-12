@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -39,6 +39,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+//    configurations.all {
+//        exclude(group = "com.intellij", module = "annotations")
+//    }
 }
 
 dependencies {
@@ -59,7 +63,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
     // Retrofit
@@ -69,6 +73,11 @@ dependencies {
     // OKHttp
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

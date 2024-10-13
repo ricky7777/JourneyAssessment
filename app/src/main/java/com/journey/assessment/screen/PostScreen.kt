@@ -9,9 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.journey.assessment.R
@@ -25,7 +22,7 @@ import com.journey.assessment.viewmodel.MainViewModel
  */
 @Composable
 fun PostScreen(
-    onNavigateToComments: (Int) -> Unit,
+    onNavigateToComments: (Int, String) -> Unit,
     onBackPress: () -> Unit,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
@@ -58,7 +55,7 @@ fun PostScreen(
             screenState = screenState.value,
             content = {
                 if (filteredPosts.isNotEmpty()) {
-                    MakeColumns(innerPadding, filteredPosts, onNavigateToComments)
+                    MakeColumns(filteredPosts, onNavigateToComments)
                 } else {
                     NoContentView()
                 }
@@ -90,9 +87,8 @@ fun handleReload(
 
 @Composable
 private fun MakeColumns(
-    innerPadding: PaddingValues,
     filteredPosts: List<PostModel>,
-    onNavigateToComments: (Int) -> Unit
+    onNavigateToComments: (Int, String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -112,12 +108,12 @@ private fun MakeColumns(
 }
 
 @Composable
-fun PostItem(post: PostModel, onNavigateToComments: (Int) -> Unit) {
+fun PostItem(post: PostModel, onNavigateToComments: (Int, String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onNavigateToComments(post.id) }
+            .clickable { onNavigateToComments(post.id, post.title) }
     ) {
 
         addTextItemWithColor(R.string.user_id, post.userId.toString(), Color.Yellow)

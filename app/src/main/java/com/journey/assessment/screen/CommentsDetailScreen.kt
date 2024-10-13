@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -20,7 +21,8 @@ import com.journey.assessment.viewmodel.MainViewModel
  */
 @Composable
 fun CommentsDetailScreen(
-    postId: Int?,
+    postId: Int,
+    postTitle: String,
     onBackPress: () -> Unit,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
@@ -30,7 +32,7 @@ fun CommentsDetailScreen(
     var screenState = remember { mutableStateOf(ScreenState.LOADING) }
 
     LaunchedEffect(postId) {
-        postId?.let {
+        postId.let {
             screenState.value = ScreenState.LOADING
             loadLocalComments(postId, mainViewModel, comments, screenState)
 
@@ -46,13 +48,18 @@ fun CommentsDetailScreen(
         searchQuery = searchQuery,
         onSearchQueryChange = { searchQuery = it },
         onBackPress = onBackPress,
-        placeHolderText = stringResource(R.string.search_hint_post_placeholder),
+        placeHolderText = stringResource(R.string.search_hint_comment_placeholder),
         content = {
             ScreenContent(
                 screenState = screenState.value,
                 content = {
                     if (filteredComments.isNotEmpty()) {
-                        MakeCommentsColumns(filteredComments)
+                        Column(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            TitleItem(postTitle)
+                            MakeCommentsColumns(filteredComments)
+                        }
                     } else {
                         NoContentView()
                     }
@@ -188,6 +195,19 @@ fun filterComments(
 }
 
 @Composable
+fun TitleItem(title: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(text = title)
+    }
+}
+
+@Composable
 fun CommentItem(comment: CommentModel) {
     Column(
         modifier = Modifier
@@ -196,6 +216,6 @@ fun CommentItem(comment: CommentModel) {
     ) {
         addTextItemWithColor(R.string.comment_name, comment.name, Color.Yellow)
         addTextItemWithColor(R.string.comment_email, comment.email, Color.Green)
-        Text(text = stringResource(id = R.string.comment_body, comment.body))
+        Text(text = stringResource(id = R.string.comment_message, comment.body))
     }
 }

@@ -10,7 +10,7 @@
     <string name="no_comments">No comments available or loading…</string>
     <string name="comment_name">Name:\u00A0</string>
     <string name="comment_email">Email:\u00A0</string>
-    <string name="comment_body">%1$s</string>
+    <string name="comment_message">Message:\n%1$s</string>
     <string name="no_internet">No Internet Connection</string>
     <string name="reload">Reload</string>
     <string name="no_content_available">No content available</string>

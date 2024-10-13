@@ -34,42 +34,37 @@ fun CommentsDetailScreen(
     LaunchedEffect(postId) {
         postId.let {
             screenState.value = ScreenState.LOADING
-            loadLocalComments(postId, mainViewModel, comments, screenState)
 
             if (hasInternet) {
                 loadNetworkComments(postId, mainViewModel, comments, screenState)
+            } else {
+                loadLocalComments(postId, mainViewModel, comments, screenState)
             }
         }
     }
 
     val filteredComments = filterComments(comments, searchQuery)
 
-    BaseScreen(
-        searchQuery = searchQuery,
+    BaseScreen(searchQuery = searchQuery,
         onSearchQueryChange = { searchQuery = it },
         onBackPress = onBackPress,
         placeHolderText = stringResource(R.string.search_hint_comment_placeholder),
         content = {
-            ScreenContent(
-                screenState = screenState.value,
-                content = {
-                    if (filteredComments.isNotEmpty()) {
-                        Column(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            TitleItem(postTitle)
-                            MakeCommentsColumns(filteredComments)
-                        }
-                    } else {
-                        NoContentView()
+            ScreenContent(screenState = screenState.value, content = {
+                if (filteredComments.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        TitleItem(postTitle)
+                        MakeCommentsColumns(filteredComments)
                     }
-                },
-                onReload = {
-                    handleReload(postId, mainViewModel, screenState, comments)
+                } else {
+                    NoContentView()
                 }
-            )
-        }
-    )
+            }, onReload = {
+                handleReload(postId, mainViewModel, screenState, comments)
+            })
+        })
 }
 
 fun loadLocalComments(
@@ -97,11 +92,7 @@ fun loadNetworkComments(
 ) {
     loadCommentsFromNetwork(postId, mainViewModel) { networkComments ->
         updateCommentsState(
-            networkComments,
-            ScreenState.NO_CONTENT,
-            ScreenState.SHOW_CONTENT,
-            comments,
-            screenState
+            networkComments, ScreenState.NO_CONTENT, ScreenState.SHOW_CONTENT, comments, screenState
         )
     }
 }
@@ -154,18 +145,14 @@ private fun MakeCommentsColumns(
         items(filteredComments) { comment ->
             CommentItem(comment)
             HorizontalDivider(
-                color = Color.Gray,
-                thickness = 1.dp,
-                modifier = Modifier.padding(vertical = 8.dp)
+                color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp)
             )
         }
     }
 }
 
 fun loadCommentsFromLocal(
-    postId: Int,
-    mainViewModel: MainViewModel,
-    onCommentsLoaded: (List<CommentModel>) -> Unit
+    postId: Int, mainViewModel: MainViewModel, onCommentsLoaded: (List<CommentModel>) -> Unit
 ) {
     mainViewModel.getCommentsFromLocal(postId) { localComments ->
         onCommentsLoaded(localComments)
@@ -173,9 +160,7 @@ fun loadCommentsFromLocal(
 }
 
 fun loadCommentsFromNetwork(
-    postId: Int,
-    mainViewModel: MainViewModel,
-    onCommentsLoaded: (List<CommentModel>) -> Unit
+    postId: Int, mainViewModel: MainViewModel, onCommentsLoaded: (List<CommentModel>) -> Unit
 ) {
     mainViewModel.fetchPostComments(postId) { result ->
         onCommentsLoaded(result)
@@ -186,8 +171,7 @@ fun loadCommentsFromNetwork(
 }
 
 fun filterComments(
-    comments: MutableState<List<CommentModel>>?,
-    searchQuery: String
+    comments: MutableState<List<CommentModel>>?, searchQuery: String
 ): List<CommentModel> {
     return comments?.value?.filter { comment ->
         comment.name.contains(searchQuery, ignoreCase = true)

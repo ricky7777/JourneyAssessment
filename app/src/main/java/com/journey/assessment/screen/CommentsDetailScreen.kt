@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -19,7 +18,6 @@ import com.journey.assessment.viewmodel.MainViewModel
  * @author Ricky Chen
  * show special post id's comments
  */
-
 @Composable
 fun CommentsDetailScreen(
     postId: Int?,
@@ -48,6 +46,7 @@ fun CommentsDetailScreen(
         searchQuery = searchQuery,
         onSearchQueryChange = { searchQuery = it },
         onBackPress = onBackPress,
+        placeHolderText = stringResource(R.string.search_hint_post_placeholder),
         content = {
             ScreenContent(
                 screenState = screenState.value,
@@ -195,8 +194,8 @@ fun CommentItem(comment: CommentModel) {
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Text(text = stringResource(id = R.string.comment_name, comment.name))
-        Text(text = stringResource(id = R.string.comment_email, comment.email))
+        addTextItemWithColor(R.string.comment_name, comment.name, Color.Yellow)
+        addTextItemWithColor(R.string.comment_email, comment.email, Color.Green)
         Text(text = stringResource(id = R.string.comment_body, comment.body))
     }
 }

@@ -9,6 +9,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.journey.assessment.R
@@ -48,7 +51,8 @@ fun PostScreen(
         searchQuery = searchQuery,
         onSearchQueryChange = { searchQuery = it },
         onBackPress = onBackPress,
-        showBackButton = false
+        showBackButton = false,
+        stringResource(R.string.search_hint_post_placeholder)
     ) { innerPadding ->
         ScreenContent(
             screenState = screenState.value,
@@ -60,17 +64,27 @@ fun PostScreen(
                 }
             },
             onReload = {
-                hasInternet = mainViewModel.hasInternetConnection()
-                if (hasInternet) {
-                    screenState.value = ScreenState.LOADING
-                    mainViewModel.fetchPostList { result ->
-                        posts.value = result
-                        screenState.value =
-                            if (result.isNullOrEmpty()) ScreenState.NO_CONTENT else ScreenState.SHOW_CONTENT
-                    }
-                }
+                handleReload(mainViewModel, screenState, posts)
             }
         )
+    }
+}
+
+fun handleReload(
+    mainViewModel: MainViewModel,
+    screenState: MutableState<ScreenState>,
+    posts: MutableState<List<PostModel>?>
+) {
+    val hasInternet = mainViewModel.hasInternetConnection()
+    if (!hasInternet) {
+        return
+    }
+
+    screenState.value = ScreenState.LOADING
+    mainViewModel.fetchPostList { result ->
+        posts.value = result
+        screenState.value =
+            if (result.isNullOrEmpty()) ScreenState.NO_CONTENT else ScreenState.SHOW_CONTENT
     }
 }
 
@@ -83,7 +97,6 @@ private fun MakeColumns(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -106,9 +119,10 @@ fun PostItem(post: PostModel, onNavigateToComments: (Int) -> Unit) {
             .padding(8.dp)
             .clickable { onNavigateToComments(post.id) }
     ) {
-        Text(text = stringResource(id = R.string.user_id, post.userId))
-        Text(text = stringResource(id = R.string.title, post.title))
-        Text(text = stringResource(id = R.string.message, getTruncatedBody(post.body)))
+
+        addTextItemWithColor(R.string.user_id, post.userId.toString(), Color.Yellow)
+        addTextItemWithColor(R.string.title, post.title, Color.Green)
+        addTextItemWithColor(R.string.message, getTruncatedBody(post.body), Color.Green)
     }
 }
 

@@ -1,15 +1,21 @@
 package com.journey.assessment.widget
 
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.journey.assessment.R
 
 /**
@@ -22,7 +28,8 @@ fun JourneyTopAppBar(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     onBackPress: () -> Unit,
-    showBackButton: Boolean = true
+    showBackButton: Boolean = true,
+    placeHolderText: String
 ) {
 
     TopAppBar(
@@ -31,9 +38,9 @@ fun JourneyTopAppBar(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
                 placeholder = {
-                    Text(text = stringResource(R.string.search_placeholder))
+                    Text(text = placeHolderText)
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(52.dp),
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
@@ -45,6 +52,7 @@ fun JourneyTopAppBar(
         navigationIcon = {
             IconButton(
                 onClick = onBackPress,
+                modifier = Modifier.offset(y = 5.dp)
             ) {
                 var imageVector = Icons.Default.ArrowBack
                 if (!showBackButton) {

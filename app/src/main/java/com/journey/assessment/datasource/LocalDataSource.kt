@@ -1,8 +1,9 @@
 package com.journey.assessment.datasource
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.journey.assessment.model.CommentModel
 import com.journey.assessment.model.PostModel
-import org.json.JSONArray
 
 /**
  * @author Ricky Chen
@@ -18,20 +19,8 @@ class LocalDataSource : DataSource {
                 {"id": 3, "userId": 2, "title": "Post 3", "body": "Body of post 3"}
             ]
         """
-
-        val jsonArray = JSONArray(jsonString)
-        val posts = mutableListOf<PostModel>()
-        for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            val post = PostModel(
-                id = jsonObject.getInt("id"),
-                userId = jsonObject.getInt("userId"),
-                title = jsonObject.getString("title"),
-                body = jsonObject.getString("body")
-            )
-            posts.add(post)
-        }
-        return posts
+        val listType = object : TypeToken<List<PostModel>>() {}.type
+        return Gson().fromJson(jsonString, listType)
     }
 
     override suspend fun getPostComments(postId: Int): List<CommentModel> {
@@ -41,20 +30,7 @@ class LocalDataSource : DataSource {
                 {"id": 2, "postId": $postId, "name": "Commenter 2", "email": "email2@test.com", "body": "Comment body 2"}
             ]
         """
-
-        val jsonArray = JSONArray(jsonString)
-        val comments = mutableListOf<CommentModel>()
-        for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            val comment = CommentModel(
-                id = jsonObject.getInt("id"),
-                postId = jsonObject.getInt("postId"),
-                name = jsonObject.getString("name"),
-                email = jsonObject.getString("email"),
-                body = jsonObject.getString("body")
-            )
-            comments.add(comment)
-        }
-        return comments
+        val listType = object : TypeToken<List<CommentModel>>() {}.type
+        return Gson().fromJson(jsonString, listType)
     }
 }

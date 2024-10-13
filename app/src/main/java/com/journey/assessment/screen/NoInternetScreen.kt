@@ -42,15 +42,3 @@ fun NoInternetScreen(
         }
     }
 }
-
-fun reloadData(
-    hasInternet: Boolean,
-    fetchData: () -> Unit
-): Boolean {
-    return if (hasInternet) {
-        fetchData()
-        true
-    } else {
-        false
-    }
-}

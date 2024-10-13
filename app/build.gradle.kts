@@ -63,6 +63,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt)
+    testImplementation(libs.androidx.ui.test.junit4.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
@@ -80,6 +81,12 @@ dependencies {
     ksp(libs.room.compiler)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.arch.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    testImplementation(libs.hilt.android.testing)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

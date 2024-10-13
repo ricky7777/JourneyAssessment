@@ -68,3 +68,5 @@ Implement the following functionalities:
   ```diff
   + Use TopAppBar widget finished this function on PostScreen and CommentsDetailScreen.
   ```
+# Thinking
+<img width="400" alt="thinking" src="https://github.com/user-attachments/assets/586b3cd1-5c3f-41b0-8c21-ec03ad5b29c2">

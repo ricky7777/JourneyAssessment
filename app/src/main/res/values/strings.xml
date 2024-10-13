@@ -10,4 +10,7 @@
     <string name="comment_name">Name: %1$s</string>
     <string name="comment_email">Email: %1$s</string>
     <string name="comment_body">%1$s</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="reload">Reload</string>
+    <string name="no_content_available">No content available</string>
 </resources>

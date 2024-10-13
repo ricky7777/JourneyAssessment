@@ -27,28 +27,50 @@ fun PostScreen(
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
     var searchQuery by remember { mutableStateOf("") }
-    var posts by remember { mutableStateOf<List<PostModel>?>(emptyList()) }
+    var posts = remember { mutableStateOf<List<PostModel>?>(emptyList()) }
+    var hasInternet by remember { mutableStateOf(mainViewModel.hasInternetConnection()) }
+    var screenState = remember { mutableStateOf(ScreenState.LOADING) }
 
     LaunchedEffect(Unit) {
-        mainViewModel.fetchPostList { result ->
-            posts = result
+        if (hasInternet) {
+            mainViewModel.fetchPostList { result ->
+                posts.value = result
+                screenState.value =
+                    if (result.isNullOrEmpty()) ScreenState.NO_CONTENT else ScreenState.SHOW_CONTENT
+            }
+        } else {
+            screenState.value = ScreenState.NO_DATA_NO_INTERNET
         }
     }
 
-    val filteredPosts = filterPosts(posts, searchQuery)
+    val filteredPosts = filterPosts(posts.value, searchQuery)
     BaseScreen(
         searchQuery = searchQuery,
         onSearchQueryChange = { searchQuery = it },
         onBackPress = onBackPress,
         showBackButton = false
     ) { innerPadding ->
-        if (filteredPosts.isNotEmpty()) {
-            MakeColumns(innerPadding, filteredPosts, onNavigateToComments)
-        } else {
-            Text(
-                text = stringResource(id = R.string.no_posts),
-            )
-        }
+        ScreenContent(
+            screenState = screenState.value,
+            content = {
+                if (filteredPosts.isNotEmpty()) {
+                    MakeColumns(innerPadding, filteredPosts, onNavigateToComments)
+                } else {
+                    NoContentView()
+                }
+            },
+            onReload = {
+                hasInternet = mainViewModel.hasInternetConnection()
+                if (hasInternet) {
+                    screenState.value = ScreenState.LOADING
+                    mainViewModel.fetchPostList { result ->
+                        posts.value = result
+                        screenState.value =
+                            if (result.isNullOrEmpty()) ScreenState.NO_CONTENT else ScreenState.SHOW_CONTENT
+                    }
+                }
+            }
+        )
     }
 }
 

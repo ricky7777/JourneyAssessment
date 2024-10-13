@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
 object NavRoutes {
     const val POST = "post"
     const val COMMENTS = "comments"
+    const val POST_ID = "posstId"
 }
 
 @Composable
@@ -51,10 +52,10 @@ fun MyAppNavHost() {
         }
 
         composable(
-            route = "${NavRoutes.COMMENTS}/{postId}",
-            arguments = listOf(navArgument("postId") { type = NavType.IntType })
+            route = "${NavRoutes.COMMENTS}/{${NavRoutes.POST_ID}}",
+            arguments = listOf(navArgument(NavRoutes.POST_ID) { type = NavType.IntType })
         ) { backStackEntry ->
-            val postId = backStackEntry.arguments?.getInt("postId")
+            val postId = backStackEntry.arguments?.getInt(NavRoutes.POST_ID)
             CommentsDetailScreen(postId = postId, onBackPress = {
                 navController.popBackStack()
             })
